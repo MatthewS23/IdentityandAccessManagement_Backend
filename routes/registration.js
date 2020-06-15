@@ -28,6 +28,7 @@ router.post('/', function(req, res, next){
         }
         else{
             console.log("Successful Account Save");
+            res.send();
         }
     });
 });
