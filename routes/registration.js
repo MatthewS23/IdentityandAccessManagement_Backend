@@ -19,8 +19,6 @@ router.post('/', function(req, res, next){
         password: passwordReceived
     });
 
-    //res.send("Succesful Request");
-
     //Store in DB:
     accountRegistration.save(function(error, data){
         if(error){
@@ -32,7 +30,5 @@ router.post('/', function(req, res, next){
         }
     });
 });
-
-
 
 module.exports = router;
