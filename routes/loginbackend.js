@@ -17,15 +17,15 @@ let userAccountModel = mongoose.model('userAccountModel');
 
 console.log("loginbackend File is being touched");
 
-router.get('/test', function (req, res, next){
+router.post('/test', function (req, res, next){
     console.log("loginbackend/test is being touched")
     //Parsing Request
     var bodyofreq = req.body;
     var emailReceieved = bodyofreq.email;
     var passwordReceived = bodyofreq.password;
-    console.log(bodyofreq);
-    console.log(emailReceieved);
-    console.log(passwordReceived);
+    console.log("request body : " + bodyofreq);
+    console.log("request body email : "  + emailReceieved);
+    console.log("request body password : "  + passwordReceived);
     //Creating object of parsed data
     var accountLogin = new userAccountModel({
         email: emailReceieved,
@@ -41,7 +41,7 @@ router.get('/test', function (req, res, next){
             var accessToken = jwt.sign({email: emailReceieved, password: passwordReceived}, process.env.TOKEN_SECRET, {expiresIn: '1hr'})
             //console.log(process.env.TOKEN_SECRET);
           console.log(accountLogin);
-            console.log(accessToken);
+            console.log("Token Generated : " + accessToken);
             //The httpOnly: true setting means that the cookie can’t be read using JavaScript but can still be sent back to the server in HTTP requests.
             // Without this setting, an XSS attack could use document.cookie to get a list of stored cookies and their values.
             res.cookie('token', accessToken, {httponly: true});
