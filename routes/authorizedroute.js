@@ -1,28 +1,41 @@
 var express = require('express');
+// var findUserAccount = require("../Helper/findUserAccount");
 var router = express.Router();
 const jwt = require('jsonwebtoken');
 var cors = require('cors')
+let mongoose = require('mongoose');
+
 var app = express();
 app.options('*', cors());
-
-
 
 router.get('/simplified', function (req, res, next){
 
     const tokenExtract = extractToken(req);
     console.log("The token extracted from req : " + tokenExtract);
+
     //Extract Payload from the JWT
-    try{
+
         const jwtContents = jwt.verify(tokenExtract, process.env.TOKEN_SECRET, {complete:true});
         const jwtContents2 = jwt.decode(tokenExtract, {complete:true});
         console.log("JWT Header authorization: " + JSON.stringify(jwtContents.header));
         console.log("JWT Payload email: " + jwtContents.payload.email);
-        //now query DB for the email and password:
-    }
-    catch(e){
-        res.status(400).json('Token not valid');
-    }
-    res.send({"Validity" : "Success"});
+        const emailExtractFromToken = jwtContents.payload.email;
+        const passwordExtractFromToken = jwtContents.payload.password;
+        console.log(passwordExtractFromToken);
+        const accountLogin = new userAccountModel({
+            email: emailExtractFromToken,
+            password: passwordExtractFromToken
+        });
+        userAccountModel.findOne({accountLogin}, function(err){
+                if (accountLogin){
+                    res.status(200).json('Success');
+                }
+                if (err){
+                    res.status(400).json('Token not valid');
+                }
+        })
+        //const loginStatus = findUserAccount(emailExtractFromToken, passwordExtractFromToken);
+        //console.log(loginStatus);
 })
 
 //If a valid JSON Webtoken is received then a 200 response will return
